@@ -1,0 +1,7 @@
+.DS_Store
+*.pyc
+__pycache__/
+
+# Large media files (use Git LFS or separate hosting)
+*.mp3
+*.pdf
