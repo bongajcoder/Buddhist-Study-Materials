@@ -1,0 +1,41 @@
+{
+  "normalized_sizes": {
+    "shannon_bodie": 200551,
+    "acrobat": 198903,
+    "pdf_extract": 200750,
+    "final": 230298,
+    "validated": 278989
+  },
+  "word_counts": {
+    "shannon_bodie": 33545
+  },
+  "content_differences_acrobat": {
+    "lines_only_in_first": [
+      "the practical doctrine of the Middle Way, transcending both asceti- the three thousand realms within it. At the same time, one perceives",
+      "with the Law. Looking to the mentor as a model, the spirit of the oneness of mentor and disciple,",
+      "Vimalakirti goes on to say that bodhisattvas for defeating our inner darkness\u2014serves to",
+      "simultaneously possesses both cause and effect [renge], and he named it the worlds other than Buddhas.",
+      "Such was the vast and untrammeled spirit of such terms as God or law. Different religions regard my mentor: the spirit to strive forever together this infinite and eternal entity variously as a source with the Buddhas of the three existences and with of fear and awe, an object of adoration, a great void the life-affirming functions of the universe such of emptiness or a wellspring of all-embracing love. as Brahma and Shakra, wherever in the universe Nichiren Daishonin saw the power of the we might find ourselves; the spirit to actualize a Mystic Law that encompasses and sustains all world of happiness and peace dedicated to value things in the universe as existing within human creation, by helping people overcome misery and beings, and he established a means for actually misfortune and the sufferings of birth, aging, manifesting that Law in their lives. sickness and death. During my second lecture at Harvard Univer-",
+      "He closes \u201cOn Attaining Buddhahood in",
+      "K Myoho-renge-kyo kosen-rufu, 33, 42, 51, 58\u201361. See also",
+      "ten directions and three existences are outside yourself. Your practice of the",
+      "a Source of Hope for Humankind",
+      "Fearing hardships and bemoaning and resent- incense, all your virtuous acts will implant benefits"
+    ],
+    "lines_only_in_second": [
+      "Vimalakirti Sutra: A Mahayana sutra about Vimalakirti, a wealthy and prominent citizen of the city of Vaishali at the time of Shakyamuni. In the sutra, Vimalakirti represents the ideal Mahayana lay believer. The Sanskrit original of this sutra is not extant, but there are three Chinese translations, including one by Kumarajiva, which is the most popular version and the work usually referred to when this title is mentioned.",
+      "Substituting faith for wisdom: The principle that faith is the true cause for gaining supreme wisdom, and faith alone leads to enlightenment.",
+      "kyo, 6, 8, 25, 28\u00d032 \u00d2The Selection of the Time,\u00d3 22 SGI, members of the, 3, 9, 33, 61 Shakyamuni, 11, 13\u00d014, 30, 48, 50, 56,",
+      "All people at the core of their lives yearn to attain enlightenment. But there is no teaching more difficult to believe or understand than the teaching that we can definitely manifest the state of Buddhahood in our present existence. We of the SGI have taken on the challenge of practicing this profound teaching and sharing it widely with others around the globe.",
+      "(10)",
+      "Nevertheless, even though you chant and believe in Myoho-renge-kyo, if you think the Law is outside yourself, you are embracing not the Mystic Law but an inferior teaching. (WND-1, 3)",
+      "12.",
+      "\u00d2Earthly Desires are Enlightenment,\u00d3 42",
+      "In his Great Concentration and Insight, T\u00d5ien-t\u00d5ai writes: \u00d2According to the Vimalakirti Sutra, the emancipation of the Thus Come One should be sought in the minds of living beings. Because living beings are entities of enlightenment, it is not something to be obtained. Because [the birth and death of] living beings are nirvana, [birth and death] are not extinguished. Emancipation already exists in the heart of one and the hearts of all, as do all phenomena.\u00d3",
+      "\u00d2The nine worlds have the potential for Buddhahood and Buddha-hood retains the nine worlds\u00d3: This means that that the lives of beings in the nine worlds\u00d1the worlds from hell through to bodhi.sattva\u00d1are endowed with the world of Buddhahood, and that the lives of Buddhas are also endowed with the nine worlds. In other words, ordinary people and Buddhas are essentially the same with no distinction between them."
+    ],
+    "total_lines_first": 2127,
+    "total_lines_second": 795
+  },
+  "artifact_count": 72
+}

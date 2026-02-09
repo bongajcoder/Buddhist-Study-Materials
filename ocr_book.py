@@ -21,13 +21,14 @@ import io
 import pytesseract
 
 # Surya OCR (v0.17+ API)
+SURYA_AVAILABLE = False
 try:
     from surya.recognition import RecognitionPredictor
     from surya.detection import DetectionPredictor
+    from surya.foundation import FoundationPredictor
     SURYA_AVAILABLE = True
 except ImportError:
-    SURYA_AVAILABLE = False
-    print("Warning: Surya OCR not available, will use Tesseract only")
+    print("Note: Surya OCR not fully available, will use Tesseract")
 
 
 def pdf_to_images(pdf_path: str, dpi: int = 300) -> list:
@@ -59,61 +60,89 @@ def pdf_to_images(pdf_path: str, dpi: int = 300) -> list:
 
 
 def ocr_with_surya(images: list) -> list:
-    """Run Surya OCR on images - best for complex layouts."""
+    """Run Surya OCR on images - best for complex layouts (v0.17+ API)."""
     if not SURYA_AVAILABLE:
         raise RuntimeError("Surya OCR not available")
 
-    print("Loading Surya models (first run downloads ~500MB)...")
+    print("Loading Surya models (first run downloads ~2GB)...")
 
-    # Initialize predictors
-    recognition_predictor = RecognitionPredictor()
+    # Initialize predictors with the new API
+    foundation_predictor = FoundationPredictor()
+    recognition_predictor = RecognitionPredictor(foundation_predictor)
     detection_predictor = DetectionPredictor()
 
     print("Running Surya OCR...")
     texts = []
 
-    for i, img in enumerate(images):
-        # Detect text regions
-        detection_result = detection_predictor([img])
+    # Process in batches for memory efficiency
+    batch_size = 4
+    for i in range(0, len(images), batch_size):
+        batch = images[i:i+batch_size]
 
-        # Recognize text
-        recognition_result = recognition_predictor([img], detection_result)
+        # Run OCR on batch (Surya v0.17 API - no language param needed)
+        predictions = recognition_predictor(
+            batch,
+            det_predictor=detection_predictor,
+            sort_lines=True  # Helps with reading order
+        )
 
-        # Extract text from result
-        page_text = []
-        if recognition_result and len(recognition_result) > 0:
-            result = recognition_result[0]
-            if hasattr(result, 'text_lines'):
-                for line in result.text_lines:
-                    if hasattr(line, 'text'):
-                        page_text.append(line.text)
-            elif hasattr(result, 'text'):
-                page_text.append(result.text)
+        # Extract text from predictions
+        for pred in predictions:
+            if hasattr(pred, 'text'):
+                texts.append(pred.text)
+            elif isinstance(pred, dict) and 'text' in pred:
+                texts.append(pred['text'])
+            else:
+                # Try to extract from text_lines
+                page_text = []
+                if hasattr(pred, 'text_lines'):
+                    for line in pred.text_lines:
+                        if hasattr(line, 'text'):
+                            page_text.append(line.text)
+                texts.append('\n'.join(page_text))
 
-        texts.append('\n'.join(page_text))
-        print(f"  OCR'd page {i + 1}/{len(images)}", end='\r')
+        print(f"  OCR'd page {min(i+batch_size, len(images))}/{len(images)}", end='\r')
 
     print()
     return texts
 
 
-def ocr_with_tesseract(images: list, psm: int = 3) -> list:
+def ocr_with_tesseract(images: list, psm: int = 3, oem: int = 3,
+                        preprocess: bool = True, lang: str = 'eng') -> list:
     """
-    Run Tesseract OCR on images.
+    Run Tesseract OCR on images with optimized settings.
 
     PSM modes for layout:
+    - 1: Automatic page segmentation with OSD
     - 3: Fully automatic page segmentation (default)
     - 4: Assume single column of text of variable sizes
     - 6: Assume uniform block of text
     - 11: Sparse text - find as much text as possible in no particular order
+    - 12: Sparse text with OSD
+
+    OEM modes:
+    - 0: Legacy engine only
+    - 1: Neural nets LSTM engine only
+    - 2: Legacy + LSTM engines
+    - 3: Default, based on what is available
     """
-    print("Running Tesseract OCR...")
+    print(f"Running Tesseract OCR (PSM={psm}, OEM={oem}, lang={lang})...")
 
     texts = []
-    custom_config = f'--psm {psm} --oem 3'
+    custom_config = f'--psm {psm} --oem {oem} -l {lang}'
 
     for i, img in enumerate(images):
-        text = pytesseract.image_to_string(img, config=custom_config)
+        # Optional preprocessing for better accuracy
+        if preprocess:
+            # Convert to grayscale
+            if img.mode != 'L':
+                img_processed = img.convert('L')
+            else:
+                img_processed = img
+        else:
+            img_processed = img
+
+        text = pytesseract.image_to_string(img_processed, config=custom_config)
         texts.append(text)
         print(f"  OCR'd page {i + 1}/{len(images)}", end='\r')
 
@@ -126,10 +155,7 @@ def detect_layout(image: Image.Image) -> str:
     Detect if page is single or two-column layout.
     Returns 'single', 'double', or 'mixed'.
     """
-    # Simple heuristic: check if there's a vertical gap in the middle
     width, height = image.size
-
-    # Convert to grayscale and check middle strip
     gray = image.convert('L')
 
     # Sample the middle 10% of the image width
@@ -144,22 +170,16 @@ def detect_layout(image: Image.Image) -> str:
 
     dark_ratio = dark_pixels / total_pixels if total_pixels > 0 else 0
 
-    # If middle strip is mostly white (< 5% dark), likely two-column
     if dark_ratio < 0.05:
         return 'double'
     else:
         return 'single'
 
 
-def process_pdf(pdf_path: str, output_dir: str, engine: str = 'surya', dpi: int = 300):
+def process_pdf(pdf_path: str, output_dir: str, engine: str = 'surya',
+                dpi: int = 300, psm: int = 3):
     """
     Process PDF with OCR and save results.
-
-    Args:
-        pdf_path: Path to input PDF
-        output_dir: Directory for output files
-        engine: 'surya', 'tesseract', or 'both'
-        dpi: Resolution for PDF rendering
     """
     pdf_path = Path(pdf_path)
     output_dir = Path(output_dir)
@@ -169,6 +189,8 @@ def process_pdf(pdf_path: str, output_dir: str, engine: str = 'surya', dpi: int 
     print(f"OCR Processing: {pdf_path.name}")
     print(f"Engine: {engine.upper()}")
     print(f"DPI: {dpi}")
+    if engine in ['tesseract', 'both']:
+        print(f"Tesseract PSM: {psm}")
     print(f"{'='*60}\n")
 
     # Convert PDF to images
@@ -203,8 +225,8 @@ def process_pdf(pdf_path: str, output_dir: str, engine: str = 'surya', dpi: int 
                 engine = 'tesseract'
 
     if engine in ['tesseract', 'both']:
-        print("\nStep 3b: Running Tesseract OCR...")
-        tesseract_texts = ocr_with_tesseract(images, psm=3)
+        print(f"\nStep 3b: Running Tesseract OCR (PSM={psm})...")
+        tesseract_texts = ocr_with_tesseract(images, psm=psm, preprocess=True)
         results['tesseract'] = tesseract_texts
 
     # Save results
@@ -221,6 +243,8 @@ def process_pdf(pdf_path: str, output_dir: str, engine: str = 'surya', dpi: int 
             f.write(f"# Date: {datetime.now().isoformat()}\n")
             f.write(f"# Pages: {len(texts)}\n")
             f.write(f"# DPI: {dpi}\n")
+            if eng_name == 'tesseract':
+                f.write(f"# PSM: {psm}\n")
             f.write("=" * 60 + "\n\n")
 
             for i, text in enumerate(texts):
@@ -265,6 +289,8 @@ Examples:
   python ocr_book.py book.pdf --engine tesseract # Use Tesseract
   python ocr_book.py book.pdf --engine both      # Compare both
   python ocr_book.py book.pdf --dpi 400          # Higher quality
+  python ocr_book.py book.pdf --psm 4            # Single column mode
+  python ocr_book.py book.pdf --psm 1            # Auto with OSD
         """
     )
 
@@ -274,6 +300,8 @@ Examples:
                         default='surya', help='OCR engine to use (default: surya)')
     parser.add_argument('--dpi', '-d', type=int, default=300,
                         help='DPI for PDF rendering (default: 300)')
+    parser.add_argument('--psm', type=int, default=3,
+                        help='Tesseract PSM mode (default: 3)')
 
     args = parser.parse_args()
 
@@ -284,7 +312,8 @@ Examples:
 
     output_dir = args.output or pdf_path.parent / "ocr_output"
 
-    process_pdf(str(pdf_path), str(output_dir), engine=args.engine, dpi=args.dpi)
+    process_pdf(str(pdf_path), str(output_dir), engine=args.engine,
+                dpi=args.dpi, psm=args.psm)
 
 
 if __name__ == '__main__':

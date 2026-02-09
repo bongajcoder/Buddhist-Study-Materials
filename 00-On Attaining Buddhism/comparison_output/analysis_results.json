@@ -1,0 +1,110 @@
+{
+  "files_loaded": {
+    "shannon_bodie": true,
+    "acrobat": true,
+    "pdf_extracted": true,
+    "final": true,
+    "validated": true
+  },
+  "file_stats": {
+    "shannon_bodie": {
+      "characters": 207302,
+      "lines": 4924,
+      "words": 33259
+    },
+    "acrobat": {
+      "characters": 199932,
+      "lines": 1008,
+      "words": 32060
+    },
+    "pdf_extracted": {
+      "characters": 202316,
+      "lines": 4676,
+      "words": 33077
+    },
+    "final": {
+      "characters": 230382,
+      "lines": 226,
+      "words": 37215
+    },
+    "validated": {
+      "characters": 283644,
+      "lines": 9308,
+      "words": 46281
+    }
+  },
+  "artifact_counts": {
+    "shannon_bodie": {
+      "OAB_pp\\.[^\\n]+Page \\w+": 72,
+      "^\\s*\\d+\\s*$": 66
+    },
+    "acrobat": {},
+    "pdf_extracted": {
+      "--- PAGE \\d+ ---": 73,
+      "^\\s*\\d+\\s*$": 74
+    },
+    "final": {},
+    "validated": {
+      "^\\s*\\d+\\s*$": 53
+    }
+  },
+  "chapter_analysis": {
+    "shannon_bodie": {
+      "front_matter": {
+        "characters": 3327,
+        "lines": 232,
+        "preview": "Table of Contents:  * iv Editor\u2019s Note  * 1 \u201cAttaining Buddhahood in This Lifetime\u2014The  * 11 \u201cThe Si..."
+      },
+      "chapter_1": {
+        "characters": 27972,
+        "lines": 637,
+        "preview": "Attaining Buddhahood in This Lifetime\u2014  The Fundamental Purpose of Life and    a Source of Hope for ..."
+      },
+      "chapter_2": {
+        "characters": 27695,
+        "lines": 553,
+        "preview": "The Significance of Chanting Nam-myoho-renge-kyo\u2014    Achieving a Life of Supreme Victory Through Cor..."
+      },
+      "chapter_3": {
+        "characters": 27824,
+        "lines": 541,
+        "preview": "\u201cIf You Think the Law Is Outside Yourself,    You Are Not Embracing the Mystic Law\u201d    Even though y..."
+      },
+      "chapter_4": {
+        "characters": 30653,
+        "lines": 587,
+        "preview": "Transforming Our Fundamental Attitude\u2014    Refusing To Live an \u201cEndless, Painful Austerity\u201d  You must..."
+      },
+      "chapter_5": {
+        "characters": 28548,
+        "lines": 709,
+        "preview": "Chanting Nam-myoho-renge-kyo  With a \u201cBrave and Vigorous\u201d Spirit\u2014    Polishing Our Lives Through Dai..."
+      },
+      "chapter_6": {
+        "characters": 27201,
+        "lines": 561,
+        "preview": "The Mystic Nature of Our Lives\u2014  \u201cBecome the Master of Your Mind    Rather Than Let Your Mind Master..."
+      },
+      "chapter_7": {
+        "characters": 33931,
+        "lines": 1038,
+        "preview": "Faith for Attaining Buddhahood in This Lifetime\u2014  Advance Unerringly Along the Great Path    of the ..."
+      }
+    }
+  },
+  "similarity_matrix": {
+    "shannon_bodie_vs_validated": 0.0475,
+    "acrobat_vs_shannon_bodie": 0.2769,
+    "acrobat_vs_pdf_extracted": 0.1017,
+    "acrobat_vs_final": 0.0443,
+    "acrobat_vs_validated": 0.0642,
+    "pdf_extracted_vs_shannon_bodie": 0.341,
+    "pdf_extracted_vs_validated": 0.0788,
+    "final_vs_shannon_bodie": 0.0417,
+    "final_vs_pdf_extracted": 0.0505,
+    "final_vs_validated": 0.0449
+  },
+  "recommendations": [
+    "Remove 138 printer artifacts from shannon_bodie"
+  ]
+}
